@@ -1,0 +1,194 @@
+From 27b9b11dbb5e49c7fd480cbc7a96851834553a65 Mon Sep 17 00:00:00 2001
+From: 097115 <097115@gmail.com>
+Date: Thu, 20 Jan 2022 20:45:19 +0200
+Subject: [PATCH] perf: Makefile: $(prefix) updated, clipboard tools updated,
+ renamed to 'scim'; perf: file.c: renamed to 'scim'
+
+---
+ src/Makefile | 20 ++++++++++----------
+ src/file.c   | 26 +++++++++++++-------------
+ 2 files changed, 23 insertions(+), 23 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index defd77a..f075b17 100755
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -1,8 +1,8 @@
+ # Specify the name of the resulting executable file
+-name = sc-im
++name = scim
+ 
+ # The base directory where everything should be installed.
+-prefix  = /usr/local
++prefix  = ${HOME}/usr/local/bundled/scim
+ 
+ EXDIR   = $(prefix)/bin
+ HELPDIR = $(prefix)/share/$(name)
+@@ -13,9 +13,9 @@ MANDIR  = $(prefix)/share/man/man1
+ 
+ # History directory, relative to $HOME
+ HISTORY_DIR= .cache
+-HISTORY_FILE=sc-iminfo
++HISTORY_FILE=sciminfo
+ # Configuration directory, relative to $HOME
+-CONFIG_DIR= .config/sc-im
++CONFIG_DIR= .config/scim
+ CONFIG_FILE=scimrc
+ 
+ # Change these to your liking or use `make CC=gcc` etc
+@@ -43,7 +43,7 @@ CFLAGS += -DHISTORY_FILE=\"$(HISTORY_FILE)\" -DHISTORY_DIR=\"$(HISTORY_DIR)\"
+ # Configuration file, relative to CONFIG_DIR directory
+ CFLAGS += -DCONFIG_FILE=\"$(CONFIG_FILE)\" -DCONFIG_DIR=\"$(CONFIG_DIR)\"
+ # Input mode history. Same as previous, but for insert mode commands
+-CFLAGS += -DINS_HISTORY_FILE=\"sc-iminfo\"
++CFLAGS += -DINS_HISTORY_FILE=\"sciminfo\"
+ # Comment out to disable undo/redo support
+ CFLAGS += -DUNDO
+ # Maximum number of rows in spreadsheet. Up to 1048576
+@@ -60,14 +60,14 @@ CFLAGS += -DMOUSE
+ #to copy to tmux clipboard:
+ #CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""tmux load-buffer"\"
+ #to copy to X clipboard:
+-CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""xclip -i -selection clipboard <"\"
++CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""${XCOPY}"\"
+ #to copy to OSX clipboard:
+ #CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""pbcopy <"\"
+ #
+ # Choose one of the proposed commands for pasting from different clipboards:
+ # You can later change it at runtime.
+ #CFLAGS += -DDEFAULT_PASTE_FROM_CLIPBOARD_CMD=\""tmux show-buffer"\"
+-CFLAGS += -DDEFAULT_PASTE_FROM_CLIPBOARD_CMD=\""xclip -o -selection clipboard"\"
++CFLAGS += -DDEFAULT_PASTE_FROM_CLIPBOARD_CMD=\""${XPASTE}"\"
+ #CFLAGS += -DDEFAULT_PASTE_FROM_CLIPBOARD_CMD=\""pbpaste"\"
+ 
+ # Command to open file or link under cursor
+@@ -182,7 +182,7 @@ install :
+ 	install -m 644 doc $(DESTDIR)$(HELPDIR)/$(name)_help
+ 	install -m 644 $(wildcard plot_*) $(DESTDIR)$(HELPDIR)/
+ 	install -d $(DESTDIR)$(MANDIR)/
+-	install -m 644 sc-im.1 $(DESTDIR)$(MANDIR)/$(name).1
++	install -m 644 scim.1 $(DESTDIR)$(MANDIR)/$(name).1
+ 
+ uninstall :
+ 	-rm $(DESTDIR)$(prefix)/bin/$(name)
+@@ -223,9 +223,9 @@ man_install:
+ 	@cp -r ../docs/man/man3/ /usr/local/share/man/
+ 	mandb
+ 
+-# "sc-im" MUST match what is in Doxyfile `MAN_EXTENSION = .sc-im.3`
++# "scim" MUST match what is in Doxyfile `MAN_EXTENSION = .scim.3`
+ man_uninstall:
+-	@rm -rf /usr/local/share/man/man3/*sc-im.3
++	@rm -rf /usr/local/share/man/man3/*scim.3
+ 	@mandb
+ 
+ clean:
+diff --git a/src/file.c b/src/file.c
+index 9ab7e77..9eb170f 100644
+--- a/src/file.c
++++ b/src/file.c
+@@ -2,9 +2,9 @@
+  * Copyright (c) 2013-2021, Andrés Martinelli <andmarti@gmail.com>             *
+  * All rights reserved.                                                        *
+  *                                                                             *
+- * This file is a part of sc-im                                                *
++ * This file is a part of scim                                                *
+  *                                                                             *
+- * sc-im is a spreadsheet program that is based on sc. The original authors    *
++ * scim is a spreadsheet program that is based on sc. The original authors    *
+  * of sc are James Gosling and Mark Weiser, and mods were later added by       *
+  * Chuck Martin.                                                               *
+  *                                                                             *
+@@ -142,7 +142,7 @@ void load_rc(void) {
+ 
+     if ((home = getenv("XDG_CONFIG_HOME"))) {
+         char config_dir[PATHLEN-(sizeof CONFIG_FILE)];
+-        snprintf(config_dir, PATHLEN-(sizeof CONFIG_FILE), "%s/sc-im", home);
++        snprintf(config_dir, PATHLEN-(sizeof CONFIG_FILE), "%s/scim", home);
+         mkdir(config_dir,0777);
+         snprintf(rcpath, PATHLEN, "%s/%s", config_dir, CONFIG_FILE);
+         (void) readfile(rcpath, 0);
+@@ -338,7 +338,7 @@ int savefile() {
+ 
+ 
+ /**
+- * \brief Write current Doc(roman) to file in (.sc) sc-im format
++ * \brief Write current Doc(roman) to file in (.sc) scim format
+  * \details Write a file. Receives parameter range and file name.
+  * \param[in] fname file name
+  * \param[in] r0
+@@ -397,7 +397,7 @@ void write_fd(FILE * f, struct roman * doc) {
+     struct ent **pp;
+     int r, c;
+ 
+-    (void) fprintf(f, "# This data file was generated by the Spreadsheet Calculator Improvised (sc-im)\n");
++    (void) fprintf(f, "# This data file was generated by the Spreadsheet Calculator Improvised (scim)\n");
+     (void) fprintf(f, "# You almost certainly shouldn't edit it.\n\n");
+     print_options(f);
+     for (c = 0; c < COLFORMATS; c++)
+@@ -864,7 +864,7 @@ sc_readfile_result readfile(char * fname, int eraseflg) {
+       return SC_READFILE_SUCCESS;
+ 
+     } else {
+-        sc_info("\"%s\" is not a sc-im compatible file", fname);
++        sc_info("\"%s\" is not a scim compatible file", fname);
+         roman->loading = 0;
+         return SC_READFILE_ERROR;
+     }
+@@ -1763,7 +1763,7 @@ void export_latex(char * fname, int r0, int c0, int rn, int cn, int verbose) {
+     }
+ 
+     // do the stuff
+-    fprintf(f,"%% ** sc-im spreadsheet output\n\\begin{tabular}{");
++    fprintf(f,"%% ** scim spreadsheet output\n\\begin{tabular}{");
+     for (col=c0;col<=cn; col++) fprintf(f,"c");
+     fprintf(f, "}\n");
+     char coldelim = '&';
+@@ -1796,7 +1796,7 @@ void export_latex(char * fname, int r0, int c0, int rn, int cn, int verbose) {
+         fprintf(f,"\n");
+     }
+ 
+-    fprintf(f,"\\end{tabular}\n%% ** end of sc-im spreadsheet output\n");
++    fprintf(f,"\\end{tabular}\n%% ** end of scim spreadsheet output\n");
+ 
+     if (fname != NULL) closefile(f, pid, 0);
+ 
+@@ -1985,13 +1985,13 @@ int plugin_exists(char * name, int len, char * path) {
+     }
+     /* Check XDG_CONFIG_HOME */
+     if ((HomeDir = getenv("XDG_CONFIG_HOME"))) {
+-        sprintf((char *) path, "%s/sc-im/%s", HomeDir, name);
++        sprintf((char *) path, "%s/scim/%s", HomeDir, name);
+         if ((fp = fopen((char *) path, "r"))) {
+             fclose(fp);
+             return 1;
+         }
+     }
+-    /* Check compile time path (default ~/.config/sc-im) */
++    /* Check compile time path (default ~/.config/scim) */
+     if ((HomeDir = getenv("HOME"))) {
+         sprintf((char *) path, "%s/%s/%s", HomeDir, CONFIG_DIR, name);
+         if ((fp = fopen((char *) path, "r"))) {
+@@ -2223,8 +2223,8 @@ void load_file(char * file) {
+     // grow sheet tbl
+     growtbl(roman->first_sh, GROWNEW, 0, 0);
+ 
+-    // load_tbl may open an sc file or a new sc-im file that can handle sheets.
+-    // new_sheet() would reuse Sheet1 if loading sc-im file.
++    // load_tbl may open an sc file or a new scim file that can handle sheets.
++    // new_sheet() would reuse Sheet1 if loading scim file.
+     load_tbl(file);
+ 
+     // now mark 'Sheet1' as empty, removing is_allocated mark.
+@@ -2270,7 +2270,7 @@ void load_tbl(char * loading_file) {
+                 // It's a new record!
+                 sc_info("New file: \"%s\"", name);
+             } else if (result == SC_READFILE_ERROR) {
+-                sc_info("\"%s\" is not a sc-im compatible file", name);
++                sc_info("\"%s\" is not a scim compatible file", name);
+             }
+         }
+     }
+-- 
+2.7.4 (Apple Git-66)
+

@@ -1,0 +1,25 @@
+From 9220bea52b1ca1f7d2a5b4456b56b205883745e1 Mon Sep 17 00:00:00 2001
+From: 097115 <097115@gmail.com>
+Date: Thu, 20 Jan 2022 20:46:56 +0200
+Subject: [PATCH] perf: color.c: change colors of help page (febe708 partly
+ reversed)
+
+---
+ src/color.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/color.c b/src/color.c
+index c8aeedb..4df7610 100644
+--- a/src/color.c
++++ b/src/color.c
+@@ -144,7 +144,6 @@ void start_default_ucolors() {
+     ucolors[ CELL_CONTENT    ].bold = 1;
+     ucolors[ INPUT           ].fg = WHITE;
+     ucolors[ INPUT           ].bg = DEFAULT_COLOR;
+-    ucolors[ NORMAL          ].bold = 1;
+     ucolors[ NORMAL          ].fg = WHITE;
+     ucolors[ NORMAL          ].bg = DEFAULT_COLOR;
+     ucolors[ CELL_ERROR      ].fg = RED;
+-- 
+2.7.4 (Apple Git-66)
+
