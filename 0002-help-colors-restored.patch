@@ -1,8 +1,7 @@
 From 9220bea52b1ca1f7d2a5b4456b56b205883745e1 Mon Sep 17 00:00:00 2001
 From: 097115 <097115@gmail.com>
 Date: Thu, 20 Jan 2022 20:46:56 +0200
-Subject: [PATCH] perf: color.c: change colors of help page (febe708 partly
- reversed)
+Subject: [PATCH] help page colors changed (febe708 partly reversed)
 
 ---
  src/color.c | 1 -
