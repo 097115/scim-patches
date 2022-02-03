@@ -53,7 +53,7 @@ index defd77a..f075b17 100755
  #CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""tmux load-buffer"\"
  #to copy to X clipboard:
 -CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""xclip -i -selection clipboard <"\"
-+CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""${XCOPY}"\"
++CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""${XCOPY} <"\"
  #to copy to OSX clipboard:
  #CFLAGS += -DDEFAULT_COPY_TO_CLIPBOARD_CMD=\""pbcopy <"\"
  #
