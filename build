@@ -1,0 +1,20 @@
+#!/bin/bash
+
+[ $# -eq 0 ] && cd $(dirname $0)/scim || cd $1
+
+git apply ~/tmp/devel/scim-patches/0001-renamed-prefix-clip-tools-updated.patch
+git apply ~/tmp/devel/scim-patches/0002-help-colors-restored.patch
+git apply ~/tmp/devel/scim-patches/0003-option-curr-for-plot-plotedit-commands-introduced.patch
+
+cd src/
+
+[ -f sc-im.1 ] && mv sc-im.1 scim.1
+
+case $(git rev-parse --abbrev-ref HEAD) in
+    dev)
+        sed -i.bak 's/\(char \* rev = "version .....\)-main";/\1-dev";/' help.c
+        ;;
+esac
+
+printf "Proceed? " && read -n1 yes
+[ -z $yes ] && make
